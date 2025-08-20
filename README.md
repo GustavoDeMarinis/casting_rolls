@@ -1,6 +1,4 @@
-<<<<<<< HEAD
-# casting_rolls
-=======
+
 # CastingRolls
 
 To start your Phoenix server:
