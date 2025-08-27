@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16
+    container_name: casting_rolls_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pf2e_gdm_2025!
+      POSTGRES_DB: casting_rolls_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - casting_rolls_db_data:/var/lib/postgresql/data
+
+volumes:
+  casting_rolls_db_data:
