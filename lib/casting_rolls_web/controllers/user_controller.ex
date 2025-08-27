@@ -25,6 +25,11 @@ defmodule CastingRollsWeb.UserController do
     render(conn, :show, user: user)
   end
 
+  def show_by_email(conn, %{"email" => email}) do
+    user = Accounts.get_user_by_email!(email)
+    render(conn, :show, user: user)
+  end
+
   def update(conn, %{"id" => id, "user" => user_params}) do
     user = Accounts.get_user!(id)
 
