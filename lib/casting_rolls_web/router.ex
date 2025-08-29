@@ -9,6 +9,8 @@ defmodule CastingRollsWeb.Router do
     pipe_through :api
 
     resources "/users", UserController, except: [:new, :edit]
+    resources "/rolls", RollController, except: [:new, :edit]
+    resources "/rooms", RoomController, except: [:new, :edit]
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

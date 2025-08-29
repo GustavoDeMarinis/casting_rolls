@@ -8,7 +8,13 @@ defmodule CastingRolls.AccountsTest do
 
     import CastingRolls.AccountsFixtures
 
-    @invalid_attrs %{username: nil, password: nil, email: nil, password_hash: nil, deleted_at: nil}
+    @invalid_attrs %{
+      username: nil,
+      password: nil,
+      email: nil,
+      password_hash: nil,
+      deleted_at: nil
+    }
 
     test "list_users/0 returns all users" do
       user = user_fixture()
@@ -21,7 +27,13 @@ defmodule CastingRolls.AccountsTest do
     end
 
     test "create_user/1 with valid data creates a user" do
-      valid_attrs = %{username: "some username", password: "some password", email: "some email", password_hash: "some password_hash", deleted_at: ~U[2025-08-26 19:43:00Z]}
+      valid_attrs = %{
+        username: "some username",
+        password: "some password",
+        email: "some email",
+        password_hash: "some password_hash",
+        deleted_at: ~U[2025-08-26 19:43:00Z]
+      }
 
       assert {:ok, %User{} = user} = Accounts.create_user(valid_attrs)
       assert user.username == "some username"
@@ -37,7 +49,14 @@ defmodule CastingRolls.AccountsTest do
 
     test "update_user/2 with valid data updates the user" do
       user = user_fixture()
-      update_attrs = %{username: "some updated username", password: "some updated password", email: "some updated email", password_hash: "some updated password_hash", deleted_at: ~U[2025-08-27 19:43:00Z]}
+
+      update_attrs = %{
+        username: "some updated username",
+        password: "some updated password",
+        email: "some updated email",
+        password_hash: "some updated password_hash",
+        deleted_at: ~U[2025-08-27 19:43:00Z]
+      }
 
       assert {:ok, %User{} = user} = Accounts.update_user(user, update_attrs)
       assert user.username == "some updated username"

@@ -12,7 +12,7 @@
 
 defmodule Seed.All do
   def run do
-    CastingRolls.Seeds.Users.run()
+    CastingRolls.Seed.Users.run()
   end
 end
 

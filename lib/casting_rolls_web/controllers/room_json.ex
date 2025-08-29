@@ -1,0 +1,26 @@
+defmodule CastingRollsWeb.RoomJSON do
+  alias CastingRolls.Rooms.Room
+
+  @doc """
+  Renders a list of rooms.
+  """
+  def index(%{rooms: rooms}) do
+    %{data: for(room <- rooms, do: data(room))}
+  end
+
+  @doc """
+  Renders a single room.
+  """
+  def show(%{room: room}) do
+    %{data: data(room)}
+  end
+
+  defp data(%Room{} = room) do
+    %{
+      id: room.id,
+      name: room.name,
+      deleted_at: room.deleted_at,
+      password_hash: room.password_hash
+    }
+  end
+end
