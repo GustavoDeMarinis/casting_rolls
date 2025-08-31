@@ -11,8 +11,8 @@ defmodule CastingRollsWeb.RoomController do
     render(conn, :index, rooms: rooms)
   end
 
-  def create(conn, %{"room" => room_params}) do
-    with {:ok, %Room{} = room} <- Rooms.create_room(room_params) do
+  def create(conn, params) do
+    with {:ok, %Room{} = room} <- Rooms.create_room(params) do
       conn
       |> put_status(:created)
       |> put_resp_header("location", ~p"/api/rooms/#{room}")

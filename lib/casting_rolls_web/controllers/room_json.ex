@@ -1,4 +1,5 @@
 defmodule CastingRollsWeb.RoomJSON do
+  alias CastingRolls.Accounts.User
   alias CastingRolls.Rooms.Room
 
   @doc """
@@ -20,7 +21,18 @@ defmodule CastingRollsWeb.RoomJSON do
       id: room.id,
       name: room.name,
       deleted_at: room.deleted_at,
-      password_hash: room.password_hash
+      owner: maybe_user(room.owner),
+      members: Enum.map(room.members, &maybe_user/1)
     }
   end
+
+  defp maybe_user(%User{} = user) do
+    %{
+      id: user.id,
+      username: user.username,
+      email: user.email
+    }
+  end
+
+  defp maybe_user(nil), do: nil
 end

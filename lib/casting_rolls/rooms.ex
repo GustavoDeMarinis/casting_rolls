@@ -19,6 +19,7 @@ defmodule CastingRolls.Rooms do
   """
   def list_rooms do
     Repo.all(Room)
+    |> Repo.preload([:owner, :members])
   end
 
   @doc """

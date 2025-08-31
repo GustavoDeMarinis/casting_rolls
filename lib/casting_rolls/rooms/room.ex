@@ -1,6 +1,7 @@
 defmodule CastingRolls.Rooms.Room do
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
@@ -26,7 +27,34 @@ defmodule CastingRolls.Rooms.Room do
   @doc false
   def changeset(room, attrs) do
     room
-    |> cast(attrs, [:name, :deleted_at, :password_hash])
-    |> validate_required([:name, :deleted_at, :password_hash])
+    |> cast(attrs, [:name, :deleted_at, :owner_id, :password])
+    |> validate_required([:name, :owner_id])
+    |> maybe_put_password_hash()
+    |> maybe_put_members(attrs)
+  end
+
+  defp maybe_put_password_hash(changeset) do
+    case get_change(changeset, :password) do
+      nil ->
+        changeset
+
+      password ->
+        put_change(changeset, :password_hash, hash_password(password))
+    end
+  end
+
+  defp hash_password(password) do
+    Bcrypt.hash_pwd_salt(password)
+  end
+
+  defp maybe_put_members(changeset, %{"member_ids" => ids}) when is_list(ids) do
+    members =
+      CastingRolls.Repo.all(
+        from(u in CastingRolls.Accounts.User,
+          where: u.id in ^ids
+        )
+      )
+
+    put_assoc(changeset, :members, members)
   end
 end
