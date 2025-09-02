@@ -36,7 +36,10 @@ defmodule CastingRolls.Rooms do
       ** (Ecto.NoResultsError)
 
   """
-  def get_room!(id), do: Repo.get!(Room, id)
+  def get_room!(id) do
+    Repo.get!(Room, id)
+    |> Repo.preload([:owner, :members])
+  end
 
   @doc """
   Creates a room.
@@ -52,8 +55,15 @@ defmodule CastingRolls.Rooms do
   """
   def create_room(attrs) do
     %Room{}
-    |> Room.changeset(attrs)
-    |> Repo.insert()
+  |> Room.changeset(attrs)
+  |> Repo.insert()
+  |> case do
+    {:ok, room} ->
+      {:ok, Repo.preload(room, [:owner, :members])}
+
+    {:error, changeset} ->
+      {:error, changeset}
+  end
   end
 
   @doc """
@@ -72,6 +82,10 @@ defmodule CastingRolls.Rooms do
     room
     |> Room.changeset(attrs)
     |> Repo.update()
+    |> case do
+      {:ok, room} -> {:ok, Repo.preload(room, [:owner, :members])}
+      error -> error
+    end
   end
 
   @doc """
@@ -87,7 +101,9 @@ defmodule CastingRolls.Rooms do
 
   """
   def delete_room(%Room{} = room) do
-    Repo.delete(room)
+    room
+    |> Ecto.Changeset.change(deleted_at: DateTime.utc_now())
+    |> Repo.update()
   end
 
   @doc """

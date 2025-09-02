@@ -15,7 +15,7 @@ defmodule CastingRolls.Accounts.User do
 
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:email, :username, :password, :deleted_at])
+    |> cast(attrs, [:id, :email, :username, :password, :deleted_at])
     |> validate_required([:email, :username, :password])
     |> unique_constraint(:username)
     |> unique_constraint(:email)

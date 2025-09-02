@@ -35,26 +35,26 @@ defmodule CastingRolls.Rooms.Room do
 
   defp maybe_put_password_hash(changeset) do
     case get_change(changeset, :password) do
-      nil ->
-        changeset
-
-      password ->
-        put_change(changeset, :password_hash, hash_password(password))
+      nil -> changeset
+      password -> put_change(changeset, :password_hash, hash_password(password))
     end
   end
 
-  defp hash_password(password) do
-    Bcrypt.hash_pwd_salt(password)
-  end
+  defp hash_password(password), do: Bcrypt.hash_pwd_salt(password)
 
   defp maybe_put_members(changeset, %{"member_ids" => ids}) when is_list(ids) do
     members =
-      CastingRolls.Repo.all(
-        from(u in CastingRolls.Accounts.User,
-          where: u.id in ^ids
+      ids
+      |> Enum.map(&Ecto.UUID.cast!/1)
+      |> then(fn uuids ->
+        CastingRolls.Repo.all(
+          from u in CastingRolls.Accounts.User,
+            where: u.id in ^uuids
         )
-      )
+      end)
 
     put_assoc(changeset, :members, members)
   end
+
+  defp maybe_put_members(changeset, _), do: changeset
 end

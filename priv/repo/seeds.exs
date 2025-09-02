@@ -9,10 +9,14 @@
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
+alias CastingRolls.Repo
 
 defmodule Seed.All do
   def run do
-    CastingRolls.Seed.Users.run()
+    Repo.transaction(fn ->
+      CastingRolls.Seed.Users.run()
+      CastingRolls.Seed.Rooms.run()
+    end)
   end
 end
 
