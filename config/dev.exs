@@ -3,7 +3,7 @@ import Config
 # Configure your database
 config :casting_rolls, CastingRolls.Repo,
   username: "postgres",
-  password: "pf2e_gdm_2025!",
+  password: "casting_rolls_gdm_2025!",
   hostname: "localhost",
   database: "casting_rolls_dev",
   stacktrace: true,

@@ -20,8 +20,6 @@ defmodule CastingRollsWeb.UserJSON do
       id: user.id,
       email: user.email,
       username: user.username,
-      password: user.password,
-      password_hash: user.password_hash,
       deleted_at: user.deleted_at
     }
   end

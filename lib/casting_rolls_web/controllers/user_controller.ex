@@ -38,6 +38,17 @@ defmodule CastingRollsWeb.UserController do
     end
   end
 
+  def update_password(conn, %{"id" => id, "password" => password}) do
+    user = Accounts.get_user!(id)
+
+    case Accounts.update_user_password(user, %{"password" => password}) do
+      {:ok, %User{}} ->
+        send_resp(conn, :no_content, "")
+      {:error, changeset} ->
+        render(conn, :error, changeset: changeset)
+    end
+  end
+
   def delete(conn, %{"id" => id}) do
     user = Accounts.get_user!(id)
 

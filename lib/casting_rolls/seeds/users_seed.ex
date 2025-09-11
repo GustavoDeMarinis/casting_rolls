@@ -4,9 +4,7 @@ alias CastingRolls.Accounts.User
 alias CastingRolls.Seed.GlobalIds
 
 defmodule CastingRolls.Seed.Users do
-
   @default_password "password123"
-
 
   @users [
     %{
@@ -46,7 +44,7 @@ defmodule CastingRolls.Seed.Users do
       case Accounts.get_user_by_email(attrs.email) do
         nil ->
           %User{}
-          |> User.changeset(attrs)
+          |> User.create_changeset(attrs)
           |> Repo.insert!()
 
         _ ->

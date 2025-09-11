@@ -9,6 +9,7 @@ defmodule CastingRollsWeb.Router do
     pipe_through :api
 
     resources "/users", UserController, except: [:new, :edit]
+    patch "/users/:id/password", UserController, :update_password
     resources "/rolls", RollController, except: [:new, :edit]
     resources "/rooms", RoomController, except: [:new, :edit]
   end

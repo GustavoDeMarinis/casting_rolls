@@ -82,7 +82,7 @@ defmodule CastingRolls.Accounts do
   """
   def create_user(attrs) do
     %User{}
-    |> User.changeset(attrs)
+    |> User.create_changeset(attrs)
     |> Repo.insert()
   end
 
@@ -100,7 +100,25 @@ defmodule CastingRolls.Accounts do
   """
   def update_user(%User{} = user, attrs) do
     user
-    |> User.changeset(attrs)
+    |> User.update_changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Updates a user.
+
+  ## Examples
+
+      iex> update_user_password(user, %{field: new_value})
+      {:ok, %User{}}
+
+      iex> update_user_password(user, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_user_password(%User{} = user, attrs) do
+    user
+    |> User.update_password_changeset(attrs)
     |> Repo.update()
   end
 
@@ -125,11 +143,11 @@ defmodule CastingRolls.Accounts do
 
   ## Examples
 
-      iex> change_user(user)
+      iex> update_changeset(user)
       %Ecto.Changeset{data: %User{}}
 
   """
   def change_user(%User{} = user, attrs \\ %{}) do
-    User.changeset(user, attrs)
+    User.update_changeset(user, attrs)
   end
 end

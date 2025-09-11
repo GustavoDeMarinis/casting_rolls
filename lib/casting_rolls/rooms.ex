@@ -55,15 +55,15 @@ defmodule CastingRolls.Rooms do
   """
   def create_room(attrs) do
     %Room{}
-  |> Room.changeset(attrs)
-  |> Repo.insert()
-  |> case do
-    {:ok, room} ->
-      {:ok, Repo.preload(room, [:owner, :members])}
+    |> Room.changeset(attrs)
+    |> Repo.insert()
+    |> case do
+      {:ok, room} ->
+        {:ok, Repo.preload(room, [:owner, :members])}
 
-    {:error, changeset} ->
-      {:error, changeset}
-  end
+      {:error, changeset} ->
+        {:error, changeset}
+    end
   end
 
   @doc """
