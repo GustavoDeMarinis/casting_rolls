@@ -2,6 +2,7 @@ defmodule CastingRolls.Rooms.Room do
   use Ecto.Schema
   import Ecto.Changeset
   import Ecto.Query
+  import CastingRolls.Utils
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
@@ -24,13 +25,33 @@ defmodule CastingRolls.Rooms.Room do
     timestamps(type: :utc_datetime_usec)
   end
 
+  @required_fields [:name, :owner_id]
+  @optional_fields [:deleted_at, :password]
   @doc false
   def changeset(room, attrs) do
     room
-    |> cast(attrs, [:name, :deleted_at, :owner_id, :password])
-    |> validate_required([:name, :owner_id])
+    |> cast(attrs, @required_fields ++ @optional_fields)
+    |> validate_required(@required_fields)
     |> maybe_put_password_hash()
     |> maybe_put_members(attrs)
+    |> validate_owner_not_in_members()
+  end
+
+  @update_fields ~w(name deleted_at owner_id)a
+  def update_changeset(room, attrs) do
+    room
+    |> cast(attrs, @update_fields)
+    |> validate_forbid_password(attrs)
+    |> validate_at_least_one_change(@update_fields)
+    |> maybe_put_members(attrs)
+    |> validate_owner_not_in_members()
+  end
+
+  def update_password_changeset(room, attrs) do
+    room
+    |> cast(attrs, [:password])
+    |> validate_required([:password])
+    |> maybe_put_password_hash()
   end
 
   defp maybe_put_password_hash(changeset) do
@@ -39,8 +60,6 @@ defmodule CastingRolls.Rooms.Room do
       password -> put_change(changeset, :password_hash, hash_password(password))
     end
   end
-
-  defp hash_password(password), do: Bcrypt.hash_pwd_salt(password)
 
   defp maybe_put_members(changeset, %{"member_ids" => ids}) when is_list(ids) do
     members =
@@ -57,4 +76,15 @@ defmodule CastingRolls.Rooms.Room do
   end
 
   defp maybe_put_members(changeset, _), do: changeset
+
+  defp validate_owner_not_in_members(changeset) do
+    owner_id = get_field(changeset, :owner_id)
+    members = get_field(changeset, :members, [])
+
+    if owner_id && Enum.any?(members, &(&1.id == owner_id)) do
+      add_error(changeset, :members, "Owner cannot also be a member")
+    else
+      changeset
+    end
+  end
 end

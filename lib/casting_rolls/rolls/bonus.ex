@@ -8,9 +8,10 @@ defmodule CastingRolls.Rolls.Bonus do
     field :value, :integer
   end
 
+  @required_fields ~w(type value)a
   def changeset(bonus, attrs) do
     bonus
-    |> cast(attrs, [:type, :value])
-    |> validate_required([:type, :value])
+    |> cast(attrs, @required_fields)
+    |> validate_required(@required_fields)
   end
 end

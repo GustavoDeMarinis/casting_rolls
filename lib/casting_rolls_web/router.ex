@@ -10,8 +10,9 @@ defmodule CastingRollsWeb.Router do
 
     resources "/users", UserController, except: [:new, :edit]
     patch "/users/:id/password", UserController, :update_password
-    resources "/rolls", RollController, except: [:new, :edit]
     resources "/rooms", RoomController, except: [:new, :edit]
+    patch "/rooms/:id/password", RoomController, :update_password
+    resources "/rolls", RollController, except: [:new, :edit]
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

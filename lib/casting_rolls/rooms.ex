@@ -80,7 +80,29 @@ defmodule CastingRolls.Rooms do
   """
   def update_room(%Room{} = room, attrs) do
     room
-    |> Room.changeset(attrs)
+    |> Room.update_changeset(attrs)
+    |> Repo.update()
+    |> case do
+      {:ok, room} -> {:ok, Repo.preload(room, [:owner, :members])}
+      error -> error
+    end
+  end
+
+  @doc """
+  Updates a room password.
+
+  ## Examples
+
+      iex> update_room_password(room, %{field: new_value})
+      {:ok, %Room{}}
+
+      iex> update_room_password(room, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_room_password(%Room{} = room, attrs) do
+    room
+    |> Room.update_password_changeset(attrs)
     |> Repo.update()
     |> case do
       {:ok, room} -> {:ok, Repo.preload(room, [:owner, :members])}

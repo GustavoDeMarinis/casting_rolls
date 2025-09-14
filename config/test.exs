@@ -7,7 +7,7 @@ import Config
 # Run `mix help test` for more information.
 config :casting_rolls, CastingRolls.Repo,
   username: "postgres",
-  password: "casting_rolls_gdm_2025!",
+  password: "pf2e_gdm_2025!",
   hostname: "localhost",
   database: "casting_rolls_test#{System.get_env("MIX_TEST_PARTITION")}",
   pool: Ecto.Adapters.SQL.Sandbox,

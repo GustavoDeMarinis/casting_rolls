@@ -33,6 +33,18 @@ defmodule CastingRollsWeb.RoomController do
     end
   end
 
+  def update_password(conn, %{"id" => id, "password" => password}) do
+    room = Rooms.get_room!(id)
+
+    case Rooms.update_room_password(room, %{"password" => password}) do
+      {:ok, %Room{}} ->
+        send_resp(conn, :no_content, "")
+
+      {:error, changeset} ->
+        render(conn, :error, changeset: changeset)
+    end
+  end
+
   def delete(conn, %{"id" => id}) do
     room = Rooms.get_room!(id)
 

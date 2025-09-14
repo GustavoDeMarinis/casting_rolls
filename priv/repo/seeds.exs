@@ -21,4 +21,4 @@ defmodule Seed.All do
 end
 
 Seed.All.run()
-IO.puts("✅ Users seeded successfully!")
+IO.puts("✅ Data seeded successfully!")

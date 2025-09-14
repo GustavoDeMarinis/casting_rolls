@@ -5,9 +5,7 @@ defmodule CastingRolls.Rolls do
 
   import Ecto.Query, warn: false
   alias CastingRolls.Repo
-
   alias CastingRolls.Rolls.Roll
-
   @doc """
   Returns the list of rolls.
 
@@ -18,7 +16,7 @@ defmodule CastingRolls.Rolls do
 
   """
   def list_rolls do
-    Repo.all(Roll)
+    Repo.all(Roll) |> Repo.preload([:user, :room])
   end
 
   @doc """
@@ -35,7 +33,7 @@ defmodule CastingRolls.Rolls do
       ** (Ecto.NoResultsError)
 
   """
-  def get_roll!(id), do: Repo.get!(Roll, id)
+  def get_roll!(id), do: Repo.get!(Roll, id) |> Repo.preload([:user, :room])
 
   @doc """
   Creates a roll.
@@ -49,9 +47,10 @@ defmodule CastingRolls.Rolls do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_roll(attrs \\ %{}) do
+  def create_roll(attrs) do
     %Roll{}
     |> Roll.changeset(attrs)
+    |> Ecto.Changeset.put_embed(:result, compute_result(attrs["input"] || attrs[:input]))
     |> Repo.insert()
   end
 
@@ -100,5 +99,50 @@ defmodule CastingRolls.Rolls do
   """
   def change_roll(%Roll{} = roll, attrs \\ %{}) do
     Roll.changeset(roll, attrs)
+  end
+
+  defp compute_result(nil), do: nil
+
+  defp compute_result(%{
+         "dices_to_roll" => dices,
+         "bonuses" => bonuses,
+         "multipliers" => multipliers
+       }) do
+    # para cada dice spec hacemos las tiradas y armamos un Breakdown
+    breakdowns =
+      Enum.map(dices, fn %{"amount" => amount, "size" => size} ->
+        rolls = Enum.map(1..amount, fn _ -> :rand.uniform(size) end)
+
+        %CastingRolls.Rolls.Breakdown{
+          dice: "#{amount}d#{size}",
+          results: rolls,
+          subtotal: Enum.sum(rolls),
+          # por ahora total igual al subtotal; luego se suman bonuses
+          total: Enum.sum(rolls)
+        }
+      end)
+
+    subtotal = breakdowns |> Enum.map(& &1.subtotal) |> Enum.sum()
+
+    # convertir bonuses a structs
+    bonus_structs =
+      Enum.map(bonuses || [], fn %{"type" => type, "value" => val} ->
+        %CastingRolls.Rolls.Bonus{type: type, value: val}
+      end)
+
+    after_bonus =
+      Enum.reduce(bonus_structs, subtotal, fn b, acc -> acc + b.value end)
+
+    final_total =
+      Enum.reduce(multipliers || [], after_bonus, fn mult, acc -> acc * mult end)
+
+    # actualizar total en cada breakdown
+    breakdowns = Enum.map(breakdowns, fn d -> %{d | total: d.subtotal} end)
+
+    %CastingRolls.Rolls.Result{
+      total: final_total,
+      breakdown: breakdowns,
+      bonus: bonus_structs
+    }
   end
 end

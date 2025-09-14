@@ -18,21 +18,41 @@ defmodule CastingRollsWeb.RollJSON do
   defp data(%Roll{} = roll) do
     %{
       id: roll.id,
-      expression: roll.expression,
       user_id: roll.user_id,
       room_id: roll.room_id,
-      result: result_data(roll.result),
+      input: %{
+        dices_to_roll: Enum.map(roll.input.dices_to_roll, fn d ->
+          %{
+            amount: d.amount,
+            size: d.size
+          }
+        end),
+        bonuses: Enum.map(roll.input.bonuses, fn b ->
+          %{
+            type: b.type,
+            value: b.value
+          }
+        end),
+        multipliers: roll.input.multipliers
+      },
+      result: %{
+        total: roll.result.total,
+        bonus: Enum.map(roll.result.bonus, fn b ->
+          %{
+            type: b.type,
+            value: b.value
+          }
+        end),
+        breakdown: Enum.map(roll.result.breakdown, fn d ->
+          %{
+            dice: d.dice,
+            results: d.results,
+            subtotal: d.subtotal,
+            total: d.total
+          }
+        end)
+      },
       inserted_at: roll.inserted_at
-    }
-  end
-
-  defp result_data(nil), do: nil
-
-  defp result_data(result) do
-    %{
-      dice: result.dice,
-      bonus: for(b <- result.bonus, do: %{type: b.type, value: b.value}),
-      total: result.total
     }
   end
 end

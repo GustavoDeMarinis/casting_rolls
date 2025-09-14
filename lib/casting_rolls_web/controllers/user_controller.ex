@@ -44,6 +44,7 @@ defmodule CastingRollsWeb.UserController do
     case Accounts.update_user_password(user, %{"password" => password}) do
       {:ok, %User{}} ->
         send_resp(conn, :no_content, "")
+
       {:error, changeset} ->
         render(conn, :error, changeset: changeset)
     end
