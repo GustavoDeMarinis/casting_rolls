@@ -150,4 +150,18 @@ defmodule CastingRolls.Accounts do
   def change_user(%User{} = user, attrs \\ %{}) do
     User.update_changeset(user, attrs)
   end
+
+  def authenticate_user(email, password) do
+    case get_user_by_email(email) do
+      nil ->
+        {:error, :unauthorized}
+
+      user ->
+        if Bcrypt.verify_pass(password, user.password_hash) do
+          {:ok, user}
+        else
+          {:error, :unauthorized}
+        end
+    end
+  end
 end

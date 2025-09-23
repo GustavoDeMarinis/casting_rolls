@@ -5,13 +5,24 @@ defmodule CastingRollsWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :auth do
+    plug CastingRollsWeb.Plugs.AuthPlug
+  end
+
   scope "/api", CastingRollsWeb do
     pipe_through :api
+    post "/signup", UserController, :create
+    post "/signin", SessionController, :create
+  end
 
-    resources "/users", UserController, except: [:new, :edit]
+  scope "/api", CastingRollsWeb do
+    pipe_through [:api, :auth]
+    resources "/users", UserController, except: [:new, :edit, :create]
     patch "/users/:id/password", UserController, :update_password
+
     resources "/rooms", RoomController, except: [:new, :edit]
     patch "/rooms/:id/password", RoomController, :update_password
+
     resources "/rolls", RollController, except: [:new, :edit]
   end
 

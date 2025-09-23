@@ -10,6 +10,9 @@ config :casting_rolls, CastingRolls.Repo,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
+config :casting_rolls, CastingRollsWeb.Auth,
+  issuer: "casting_rolls",
+  secret_key: System.get_env("JWT_SECRET_KEY")
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #

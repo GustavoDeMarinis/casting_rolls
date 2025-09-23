@@ -11,6 +11,9 @@ config :casting_rolls,
   ecto_repos: [CastingRolls.Repo],
   generators: [timestamp_type: :utc_datetime, binary_id: true]
 
+config :casting_rolls, CastingRollsWeb.Auth,
+  secret_key: System.get_env("JWT_SECRET_KEY")
+
 # Configures the endpoint
 config :casting_rolls, CastingRollsWeb.Endpoint,
   url: [host: "localhost"],

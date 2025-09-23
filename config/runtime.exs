@@ -30,6 +30,17 @@ if config_env() == :prod do
 
   maybe_ipv6 = if System.get_env("ECTO_IPV6") in ~w(true 1), do: [:inet6], else: []
 
+
+  jwt_secret =
+    System.get_env("JWT_SECRET_KEY") ||
+      raise """
+      environment variable JWT_SECRET_KEY is missing.
+      """
+
+  config :casting_rolls, CastingRollsWeb.Auth,
+    secret_key: jwt_secret
+
+
   config :casting_rolls, CastingRolls.Repo,
     # ssl: true,
     url: database_url,
