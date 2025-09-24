@@ -11,6 +11,10 @@ defmodule CastingRollsWeb.Endpoint do
     same_site: "Lax"
   ]
 
+  socket "/socket", CastingRollsWeb.UserSocket,
+  websocket: true,
+  longpoll: false
+
   socket "/live", Phoenix.LiveView.Socket,
     websocket: [connect_info: [session: @session_options]],
     longpoll: [connect_info: [session: @session_options]]

@@ -20,14 +20,15 @@ defmodule CastingRollsWeb.RoomChannel do
   end
 
   @impl true
-  def handle_in("new_roll", %{"roll" => roll_params}, socket) do
+  def handle_in("new_roll", %{"roll" => %{"input" => input_params}}, socket) do
     user = socket.assigns.current_user
     room_id = socket.assigns.room_id
 
-    params = Map.merge(roll_params, %{
+    params = %{
+      "input" => input_params,
       "user_id" => user.id,
       "room_id" => room_id
-    })
+    }
 
     case Rolls.create_roll(params) do
       {:ok, %Roll{} = roll} ->
@@ -38,4 +39,5 @@ defmodule CastingRollsWeb.RoomChannel do
         {:reply, {:error, %{errors: changeset}}, socket}
     end
   end
+
 end

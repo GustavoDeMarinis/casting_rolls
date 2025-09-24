@@ -13,7 +13,7 @@ defmodule CastingRolls.RoomsFixtures do
       |> Enum.into(%{
         deleted_at: ~U[2025-08-27 18:32:00Z],
         name: "some name",
-        password_hash: "some password_hash"
+        owner_id: CastingRolls.Seed.GlobalIds.user_gustavo_id(),
       })
       |> CastingRolls.Rooms.create_room()
 

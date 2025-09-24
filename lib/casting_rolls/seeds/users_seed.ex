@@ -9,31 +9,31 @@ defmodule CastingRolls.Seed.Users do
   @users [
     %{
       id: GlobalIds.user_gustavo_id(),
-      email: "gustadema@gmail.com",
+      email: GlobalIds.user_gustavo_email(),
       username: "gustavoDm",
       password: @default_password
     },
     %{
       id: GlobalIds.user_alice_id(),
-      email: "alice@example.com",
+      email: GlobalIds.user_alice_email(),
       username: "alice",
       password: @default_password
     },
     %{
       id: GlobalIds.user_rodrigo_id(),
-      email: "rodrigo@example.com",
+      email: GlobalIds.user_rodrigo_email(),
       username: "rodrigo",
       password: @default_password
     },
     %{
       id: GlobalIds.user_fernando_id(),
-      email: "fernando@example.com",
+      email: GlobalIds.user_fernando_email(),
       username: "fernando",
       password: @default_password
     },
     %{
       id: GlobalIds.user_federico_id(),
-      email: "federico@example.com",
+      email: GlobalIds.user_federico_email(),
       username: "federico",
       password: @default_password
     }
